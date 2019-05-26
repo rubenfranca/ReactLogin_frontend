@@ -11,6 +11,6 @@ export default props =>
     <div className="app">
         <Logo />
         <Nav />
-        <Main icon="home" title="Start" subtitle="Insert subtitle here" />
+        <Main icon="home" title="Home" subtitle="Insert subtitle here" />
         <Footer />
     </div>
