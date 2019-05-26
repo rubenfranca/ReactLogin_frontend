@@ -92,7 +92,7 @@ export default class User extends Component {
 
     renderTable() {
         return (
-            <table className="table mt-5">
+            <table className="table mt-4">
                 <thead>
                     <tr>
                         <th>ID</th>
