@@ -18,6 +18,11 @@ export default class User extends Component {
 
     state = { ...initialState };
 
+    async componentWillMount() {
+        const response = await axios.get(baseUrl);
+        this.setState({ list: response.data });
+    }
+
     clear() {
         this.setState({ user: initialState.user });
     }
@@ -31,9 +36,9 @@ export default class User extends Component {
         this.setState({ user: initialState.user, list });
     }
 
-    getUpdatedList(user) {
+    getUpdatedList(user, add = true) {
         const list = this.state.list.filter(u => u.id !== user.id);
-        list.unshift(user);
+        if (add) list.unshift(user);
         return list;
     }
 
@@ -75,10 +80,59 @@ export default class User extends Component {
         )
     }
 
+    load(user) {
+        this.setState({ user });
+    }
+
+    async remove(user) {
+        await axios.delete(`${baseUrl}/${user.id}`);
+        const list = this.getUpdatedList(user, false);
+        this.setState({ list });
+    }
+
+    renderTable() {
+        return (
+            <table className="table mt-5">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.renderRows()}
+                </tbody>
+            </table>
+        );
+    }
+
+    renderRows() {
+        return this.state.list.map(user => {
+            return (
+                <tr key={user.id}>
+                    <td>{user.id}</td>
+                    <td>{user.name}</td>
+                    <td>{user.email}</td>
+                    <td>
+                        <button className="btn btn-warning" onClick={() => this.load(user)}>
+                            <i className="fa fa-pencil"></i>
+                        </button>
+                        <button className="btn btn-danger ml-2" onClick={() => this.remove((user))}>
+                            <i className="fa fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            );
+        })
+    }
+
     render() {
         return (
             <Main {...headerProps}>
                 {this.renderForm()}
+                {this.renderTable()}
             </Main>
         );
     }
